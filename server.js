@@ -52,6 +52,28 @@ app.post("/products", (req,res) => {
     res.status(201).json(newProduct);
 });
 
+app.put("/products/:id", (req, res) => {
+    const productId = Number(req.params.id);
+    const product = products.find((product) => product.id === productId);
+
+    if (!product) {
+        return res.status(404).json({message: "Product not found"});
+    }
+    const { name, price, quantity } = req.body;
+    if (!name || price === undefined || quantity === undefined){
+        return res.status(400).json({message: "Name, price and quantity are require"});
+    }
+
+    if (price < 0 || quantity < 0){
+        return res.status(400).json({message: "Price and quantity cannot be negative"});
+    }
+    product.name = name;
+    product.price = price;
+    product.quantity = quantity;
+
+    res.json(product);
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
