@@ -47,22 +47,16 @@ app.get("/products/:id", async(req, res) => {
     }
 });
 
-app.post("/products", async (req, res) => {
-  try {
-    // Check if the request body is an array (bulk insert)
-    if (Array.isArray(req.body)) {
-      const products = await Product.insertMany(req.body);
-      return res.status(201).json(products);
-    }
+app.post("/products", async (req,res) => {
+    try{
+        const product = await Product.create(req.body);
 
-    // Single product insert
-    const product = await Product.create(req.body);
-    return res.status(201).json(product);
-  } catch (error) {
-    return res.status(400).json({
-      message: error.message
-    });
-  }
+        res.status(201).json(product);
+    } catch(error){
+        res.status(400).json({
+            message: error.message
+        });
+    }
 });
 
 app.put("/products/:id", async (req, res) => {
