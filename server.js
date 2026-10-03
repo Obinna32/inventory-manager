@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
+const Product = require("./src/models/Product");
 
 const app = express();
 
@@ -18,20 +19,6 @@ mongoose
     console.error("MongoDB connection failed:", error);
 });
 
-const products = [
-    {
-        id: 1,
-        name: "Wireless Mouse",
-        price: 8500,
-        quantity: 10
-    },
-    {
-        id: 2,
-        name: "Keyboard",
-        price: 12000,
-        quantity: 5
-    }
-]
 
 app.get("/", (req, res) => {
     res.send("Inventory Manager API is running");
