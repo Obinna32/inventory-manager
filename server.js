@@ -59,26 +59,26 @@ app.post("/products", async (req,res) => {
     }
 });
 
-app.put("/products/:id", (req, res) => {
-    const productId = Number(req.params.id);
-    const product = products.find((product) => product.id === productId);
+app.put("/products/:id", async (req, res) => {
+    try{
+        const { name, price, quantity, category } = req.body;
 
-    if (!product) {
-        return res.status(404).json({message: "Product not found"});
-    }
-    const { name, price, quantity } = req.body;
-    if (!name || price === undefined || quantity === undefined){
-        return res.status(400).json({message: "Name, price and quantity are require"});
-    }
+        if (!name || price === undefined || quantity === undefined || !category){
+            return res.status(400).json({ message: "Name, price, quantity and category are required"});
+        }
+        if (price < 0 || quantity < 0){
+            return res.status(400).json({message: "Price and quantity cannot be negative"});
+        }
 
-    if (price < 0 || quantity < 0){
-        return res.status(400).json({message: "Price and quantity cannot be negative"});
-    }
-    product.name = name;
-    product.price = price;
-    product.quantity = quantity;
+        const product = await Product.findByIdAndUpdate(req.params.id, { name, price, quantity, category}, {new: true, runValidators: true});
 
-    res.json(product);
+        if (!product){
+            return res.status(404).json({message: "Product not found"});
+        }
+        res.json(product);
+    }catch(error){
+        res.status(400).json({message: "Invalid product ID"});
+    }
 });
 
 app.delete("products/:id", (req, res) => {
