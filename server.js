@@ -35,17 +35,17 @@ app.get("/products", async(req, res) => {
     }
 });
 
-app.get("/products/:id", (req, res) => {
-    const productId = Number(req.params.id);
-    if(Number.isNaN(productId)){
-        return res.status(400).json({message: "Product ID must be a number"});
+app.get("/products/:id", async(req, res) => {
+    try{
+        const product = await Product.findById(req.params.id);
+        if(!product){
+            return res.status(404).json({message: "Product not found"});
+        }
+        res.json(product);
+    }catch(error){
+        res.status(400).json({message: "Invalid product ID"});
     }
-    const whatProduct = products.find((product) => product.id === productId);
-    if (!whatProduct){
-        return res.status(404).json({message: "Product not found"});
-    }
-    res.json(whatProduct);
-})
+});
 
 app.post("/products", async (req,res) => {
     try{
