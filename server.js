@@ -24,8 +24,15 @@ app.get("/", (req, res) => {
     res.send("Inventory Manager API is running");
 });
 
-app.get("/products", (req, res) => {
-    res.json(products);
+app.get("/products", async(req, res) => {
+    try{
+        const products = await Product.find();
+        res.json(products);
+    }catch(error){
+        res.status(500).json({
+            message: error.message
+        });
+    }
 });
 
 app.get("/products/:id", (req, res) => {
