@@ -81,18 +81,16 @@ app.put("/products/:id", async (req, res) => {
     }
 });
 
-app.delete("products/:id", (req, res) => {
-    const productId = Number(req.params.id);
-
-    const productIndex = products.findIndex((product) => product.id === productId);
-    
-    if (productIndex === -1){
-        return res.status(404).json({message: "Product not found"});
+app.delete("products/:id", async(req, res) => {
+    try{
+        const product = await Product.findByIdAndDelete(req.params.id);
+        if (!product){
+            return res.status(404).json({message: "Product not found"});
+        }
+        res.json({message: "Product deleted successfully", product});
+    }catch(error){
+        res.status(400).json({message: "Invalid product ID"});
     }
-
-    const deletedProduct = products.splice(productIndex, 1);
-
-    res.json({message: "Product deleted successfully", product: deletedProduct[0]});
 });
 
 app.listen(PORT, () => {
