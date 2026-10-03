@@ -40,15 +40,16 @@ app.get("/products/:id", (req, res) => {
     res.json(whatProduct);
 })
 
-app.post("/products", (req,res) => {
-    const newProduct = {
-        id: products.length + 1,
-        name: req.body.name,
-        price: req.body.price,
-        quantity: req.body.quantity
-    };
-    products.push(newProduct);
-    res.status(201).json(newProduct);
+app.post("/products", async (req,res) => {
+    try{
+        const product = await Product.create(req.body);
+
+        res.status(201).json(product);
+    } catch(error){
+        res.status(400).json({
+            message: error.message
+        });
+    }
 });
 
 app.put("/products/:id", (req, res) => {
