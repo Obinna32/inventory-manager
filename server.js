@@ -30,8 +30,14 @@ app.get("/products", (req, res) => {
 });
 
 app.get("/products/:id", (req, res) => {
-    productId = Number(req.params.id) - 1;
-    whatProduct = products[productId]
+    const productId = Number(req.params.id);
+    if(Number.isNaN(productId)){
+        return res.status(400).json({message: "Product ID must be a number"});
+    }
+    const whatProduct = products.find((product) => product.id === productId);
+    if (!whatProduct){
+        return res.status(404).json({message: "Product not found"});
+    }
     res.json(whatProduct);
 })
 
