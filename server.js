@@ -3,10 +3,12 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const Product = require("./src/models/Product");
+const productRoutes = require("./src/routes/productRoutes");
 
 const app = express();
 
 app.use(express.json());
+app.use(productRoutes);
 
 const PORT = 3000;
 
@@ -24,16 +26,7 @@ app.get("/", (req, res) => {
     res.send("Inventory Manager API is running");
 });
 
-app.get("/products", async(req, res) => {
-    try{
-        const products = await Product.find();
-        res.json(products);
-    }catch(error){
-        res.status(500).json({
-            message: error.message
-        });
-    }
-});
+
 
 app.get("/products/:id", async(req, res) => {
     try{
